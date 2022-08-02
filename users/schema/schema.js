@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const _ = require("lodash");
 
-const { GraphQLObjectType, GraphQLString, GraphQLInt } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphql;
 
 //hardcoded data with 2 users
 const users = [
@@ -28,8 +28,13 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLString } },
       resolve(parentValue, args) {
         //this is the function that goes into the backend, and gets the data
-        return _.find(users, { id: args.id })
+        return _.find(users, { id: args.id });
       },
     },
   },
+});
+
+//GraphQLSchema takes a root query, and returns a GraphQL schema instance
+module.exports = new GraphQLSchema({
+  query: RootQuery,
 });
