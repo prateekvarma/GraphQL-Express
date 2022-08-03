@@ -22,6 +22,13 @@ const UserType = new GraphQLObjectType({
     age: { type: GraphQLInt },
     company: {
       type: CompanyType,
+      resolve(parentValue, args) {
+        //This resolve function will return the company_id, since it's job is to resolve the schema CompanyType into actual DB/API source field data.
+        return axios
+          .get(`http://localhost:3000/companies/${parentValue.companyId}`)
+          .then((res) => res.data);
+          //above, we're not just returning "parentValue.companyId" because we need access to the entire data object, and not just the ID.
+      },
     },
   },
 });
