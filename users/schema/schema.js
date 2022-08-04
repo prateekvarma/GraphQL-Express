@@ -7,6 +7,7 @@ const {
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
+  GraphQLNonNull,
 } = graphql;
 
 //Below, new GraphQL type of data - CompanyType
@@ -74,7 +75,31 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
+//Define our root mutation
+const mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addUser: {
+      type: UserType,
+      args: {
+        firstName: { type: new GraphQLNonNull(GraphQLString) }, //The 'GraphQLNonNull' is a simple validation that checks if something is passed, or if it's null.
+        age: { type: new GraphQLNonNull(GraphQLInt) },
+        companyId: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        return axios
+          .post("http://localhost:3000/users", {
+            firstName: args.firstName,
+            age: args.age,
+          })
+          .then((res) => res.data);
+      },
+    },
+  },
+});
+
 //GraphQLSchema takes a root query, and returns a GraphQL schema instance
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation: mutation,
 });
