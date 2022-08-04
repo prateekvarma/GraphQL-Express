@@ -27,7 +27,7 @@ const UserType = new GraphQLObjectType({
         return axios
           .get(`http://localhost:3000/companies/${parentValue.companyId}`)
           .then((res) => res.data);
-          //above, we're not just returning "parentValue.companyId" because we need access to the entire data object, and not just the ID.
+        //above, we're not just returning "parentValue.companyId" because we need access to the entire data object, and not just the ID.
       },
     },
   },
@@ -45,6 +45,15 @@ const RootQuery = new GraphQLObjectType({
         return axios
           .get(`http://localhost:3000/users/${args.id}`)
           .then((response) => response.data);
+      },
+    },
+    company: {
+      type: CompanyType,
+      args: { id: { type: GraphQLString } },
+      resolve(parentValue, args) {
+        return axios
+          .get(`http://localhost:3000/companies/${args.id}`)
+          .then((resp) => resp.data);
       },
     },
   },
